@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 from agenteval.config import settings
 from agenteval.schema.test_case import TestCase, UserPersona
 from agenteval.simulation.base_simulator import BaseSimulator
@@ -69,9 +71,9 @@ class GroqSimulator(BaseSimulator):
         self.goal = goal
         self.outcome_type = outcome_type
         self._history: list[dict[str, str]] = []
-        self._client: "Groq | None" = None  # type: ignore[name-defined]
+        self._client: Any = None
 
-    def _get_client(self) -> "Groq":  # type: ignore[name-defined]
+    def _get_client(self) -> Any:
         try:
             from groq import Groq
         except ImportError as error:
