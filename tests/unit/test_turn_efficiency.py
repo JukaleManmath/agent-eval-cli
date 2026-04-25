@@ -1,6 +1,5 @@
-from tests.conftest import make_session, make_test_case
-
 from agenteval.scorers.turn_efficiency import score_turn_efficiency
+from tests.conftest import make_session, make_test_case
 
 
 def test_within_expected_turns():

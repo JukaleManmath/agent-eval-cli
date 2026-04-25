@@ -4,7 +4,6 @@ from agenteval.config import settings
 from agenteval.schema.test_case import TestCase, UserPersona
 from agenteval.simulation.base_simulator import BaseSimulator
 
-
 MAX_CONTEXT_TOKENS = 4000
 GROQ_MODEL = "llama-3.3-70b-versatile"
 

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from agenteval.scorers.base import ScorerResult
 
-
 BASE_WEIGHTS = {
     "task_completion": 0.30,
     "instruction_following": 0.25,

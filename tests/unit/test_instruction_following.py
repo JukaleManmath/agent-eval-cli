@@ -1,6 +1,5 @@
-from tests.conftest import make_session, make_test_case
-
 from agenteval.scorers.instruction_following import score_instruction_following
+from tests.conftest import make_session, make_test_case
 
 
 def test_no_forbidden_no_required():

@@ -19,7 +19,6 @@ from agenteval.runner import build_summary, load_test_cases, run_scenarios
 from agenteval.schema.test_case import load_test_case
 from agenteval.simulation.groq_simulator import GROQ_MODEL
 
-
 console = Console()
 
 
