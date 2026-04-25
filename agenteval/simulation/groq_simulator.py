@@ -69,9 +69,9 @@ class GroqSimulator(BaseSimulator):
         self.goal = goal
         self.outcome_type = outcome_type
         self._history: list[dict[str, str]] = []
-        self._client: object | None = None
+        self._client: "Groq | None" = None  # type: ignore[name-defined]
 
-    def _get_client(self) -> object:
+    def _get_client(self) -> "Groq":  # type: ignore[name-defined]
         try:
             from groq import Groq
         except ImportError as error:

@@ -18,7 +18,7 @@ from agenteval.schema.report import (
 
 def write_report(
     results: list,
-    summary: RunSummary,
+    summary: RunSummary | dict,
     mode: str,
     model: str | None,
     output_dir: Path,

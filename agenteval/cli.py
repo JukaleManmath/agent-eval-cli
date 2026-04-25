@@ -139,7 +139,7 @@ def dashboard(reports_dir: Path) -> None:
     reports_output.mkdir(parents=True, exist_ok=True)
 
     report_files = sorted(reports_dir.glob("agenteval_report_*.json"))
-    manifest = {"reports": []}
+    manifest: dict[str, list[str]] = {"reports": []}
     for report_file in report_files:
         destination = reports_output / report_file.name
         shutil.copy2(report_file, destination)

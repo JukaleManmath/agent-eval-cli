@@ -122,7 +122,7 @@ async def run_scenarios(
                 )
             )
         else:
-            processed.append(result)
+            processed.append(result)  # type: ignore[arg-type]
 
     return processed
 
@@ -147,7 +147,7 @@ def load_test_cases(path: Path, tag: str | None = None) -> list[TestCase]:
 
 
 def build_summary(
-    results: list[Session | ScenarioError],
+    results: list[ScenarioResult | ScenarioError],
     scores: list[float],
     fail_on_threshold: float | None,
 ) -> dict:

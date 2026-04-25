@@ -48,6 +48,7 @@ dev = [
     "respx>=0.21",
     "ruff>=0.4.0",
     "mypy>=1.10.0",
+    "types-PyYAML>=6.0",
     "pre-commit>=3.7.0",
     "build>=1.2.0",
     "twine>=5.0.0",
