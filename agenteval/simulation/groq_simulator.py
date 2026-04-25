@@ -6,6 +6,7 @@ from agenteval.simulation.base_simulator import BaseSimulator
 
 
 MAX_CONTEXT_TOKENS = 4000
+GROQ_MODEL = "llama-3.3-70b-versatile"
 
 GROQ_USER_SIMULATOR_PROMPT = """
 You are roleplaying as a real user interacting with an AI agent.
@@ -96,7 +97,7 @@ class GroqSimulator(BaseSimulator):
 
         client = self._get_client()
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model=GROQ_MODEL,
             messages=messages,
             temperature=0.7,
             max_tokens=120,
