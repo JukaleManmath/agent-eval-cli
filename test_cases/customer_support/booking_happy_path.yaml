@@ -1,0 +1,71 @@
+meta:
+  schema_version: "1.0"
+  scenario_id: "booking-happy-path-001"
+  name: "Patient successfully books a doctor's appointment"
+  description: "Standard happy path — first-time patient books with Dr. Smith"
+  version: "1.0.0"
+  tags: ["healthcare", "booking", "happy-path"]
+
+agent:
+  endpoint: "http://localhost:8080/chat"
+  method: "POST"
+  headers:
+    Content-Type: "application/json"
+    Authorization: "Bearer ${AGENT_API_KEY}"
+  request_template: |
+    {
+      "session_id": "${SESSION_ID}",
+      "message": "${USER_MESSAGE}"
+    }
+  response_path: "response.text"
+  timeout_seconds: 30
+  health_check_path: "/health"
+
+user_persona:
+  name: "Sarah Chen"
+  tone: "polite but slightly anxious"
+  background: "First-time patient, not tech-savvy"
+  opening_message: "Hi, I need to see a doctor about my knee."
+
+outcome_type: success
+
+conversation:
+  max_turns: 12
+  min_turns: 3
+  expected_turns: 8
+
+evaluation:
+  success_intent: "User receives a confirmed appointment with specific date, time, and doctor name"
+  success_keywords:
+    - "appointment confirmed"
+    - "booked for"
+    - "see you on"
+    - "confirmation number"
+  forbidden_phrases:
+    - "I don't know"
+    - "I cannot help"
+    - "please call us"
+  required_phrases:
+    - "doctor"
+    - "appointment"
+  context_facts:
+    - "Appointments available Monday through Friday"
+    - "Dr. Smith specialises in orthopedics"
+    - "New patient appointments require 30 minutes"
+    - "Cancellation requires 24 hours notice"
+    - "Clinic hours are 8am to 6pm"
+  thresholds:
+    task_completion: 0.65
+    instruction_following: 0.80
+    coherence: 0.70
+    turn_efficiency: 0.60
+    hallucination_risk: 0.75
+    aggregate: 0.70
+
+scripted_turns:
+  - "Hi, I need to see a doctor about my knee. It's been hurting for two weeks."
+  - "Is Dr. Smith available this week?"
+  - "Thursday at 2pm works for me."
+  - "My name is Sarah Chen, date of birth March 12 1990."
+  - "Yes, that email is correct."
+  - "Great, thank you so much."

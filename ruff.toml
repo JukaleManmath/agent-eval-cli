@@ -1,0 +1,17 @@
+line-length = 88
+target-version = "py39"
+
+[lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes (undefined names, unused imports)
+    "I",   # isort (import ordering)
+    "UP",  # pyupgrade (modernise syntax for target Python version)
+    "B",   # flake8-bugbear (common bug patterns)
+]
+ignore = [
+    "E501",  # line too long — handled by formatter, not linter
+]
+
+[lint.isort]
+known-first-party = ["agenteval"]

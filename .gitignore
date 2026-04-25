@@ -1,0 +1,53 @@
+# Virtual environment
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+
+# Environment variables — never commit secrets
+.env
+.env.local
+.env.*.local
+
+# Test / coverage output
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Type checking
+.mypy_cache/
+
+# Dashboard build output — built by `make build-dashboard`, not git-tracked
+agenteval/dashboard_dist/*
+# Keep the directory itself tracked so fresh clones have the folder
+!agenteval/dashboard_dist/.gitkeep
+
+# Node (dashboard source)
+dashboard/node_modules/
+dashboard/dist/
+
+# Reports generated during runs
+reports/
+agenteval_report_*.json
+
+# macOS
+.DS_Store
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
