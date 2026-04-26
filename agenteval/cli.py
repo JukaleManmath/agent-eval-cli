@@ -74,14 +74,18 @@ def validate(path: str) -> None:
     default=Path("reports"),
     show_default=True,
 )
+@click.option("--tag", default=None, help="Filter test cases by tag")
+@click.option("--verbose", is_flag=True, default=False, help="Print full transcript on failure")
 def run(
     path: str,
     mode: str,
     concurrency: int,
     fail_on_threshold: float | None,
     output_dir: Path,
+    tag: str | None,
+    verbose: bool,
 ) -> None:
-    test_cases = load_test_cases(Path(path))
+    test_cases = load_test_cases(Path(path), tag=tag)
     if not test_cases:
         console.print("[red]No valid test cases found[/red]")
         sys.exit(1)
@@ -118,6 +122,14 @@ def run(
 
     console.print(table)
     console.print(f"Report written to {report_path}")
+
+    if verbose:
+        for result in results:
+            if not result.passed and hasattr(result, "conversation"):
+                console.print(f"\n[bold]Transcript: {result.scenario_name}[/bold]")
+                for turn in result.conversation:
+                    role_style = "cyan" if turn.role == "user" else "yellow"
+                    console.print(f"[{role_style}]{turn.role}[/{role_style}]: {turn.content}")
 
     if summary["overall_pass"]:
         console.print("[green]Overall pass[/green]")

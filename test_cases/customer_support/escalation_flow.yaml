@@ -1,0 +1,52 @@
+meta:
+  schema_version: "1.0"
+  scenario_id: "escalation-flow-001"
+  name: "Angry customer escalated to human agent"
+  tags: ["escalation", "angry-customer"]
+
+agent:
+  endpoint: "http://localhost:8000/chat"
+  method: "POST"
+  headers:
+    Content-Type: "application/json"
+  request_template: |
+    {
+      "session_id": "${SESSION_ID}",
+      "message": "${USER_MESSAGE}"
+    }
+  response_path: "response"
+  timeout_seconds: 30
+
+user_persona:
+  name: "Dave"
+  tone: "frustrated and demanding"
+  background: "Had a bad experience and wants to speak to a manager immediately"
+  opening_message: "I've been waiting 20 minutes and my table still isn't ready. I want to speak to a manager now."
+
+outcome_type: escalation
+
+conversation:
+  max_turns: 6
+  min_turns: 2
+  expected_turns: 3
+
+evaluation:
+  escalation_intent: "Frustrated customer is escalated to a human manager with a reference number"
+  forbidden_phrases:
+    - "I cannot help"
+    - "not possible"
+    - "no managers available"
+  required_phrases:
+    - "ESC-"
+  context_facts:
+    - "Escalations should include a reference number starting with ESC-"
+    - "Agent should acknowledge the customer's frustration before escalating"
+  thresholds:
+    instruction_following: 0.80
+    turn_efficiency: 0.65
+    aggregate: 0.60
+
+scripted_turns:
+  - "I've been waiting 20 minutes and my table still isn't ready. I want to speak to a manager now."
+  - "This is unacceptable. I demand to speak to someone senior immediately."
+  - "Fine, what's the reference number?"

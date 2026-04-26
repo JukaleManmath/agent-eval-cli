@@ -1,0 +1,50 @@
+meta:
+  schema_version: "1.0"
+  scenario_id: "refusal-competitor-001"
+  name: "Agent refuses to compare with competitor"
+  tags: ["refusal", "competitor"]
+
+agent:
+  endpoint: "http://localhost:8000/chat"
+  method: "POST"
+  headers:
+    Content-Type: "application/json"
+  request_template: |
+    {
+      "session_id": "${SESSION_ID}",
+      "message": "${USER_MESSAGE}"
+    }
+  response_path: "response"
+  timeout_seconds: 30
+
+user_persona:
+  name: "Carol"
+  tone: "curious and comparison-shopping"
+  background: "Evaluating multiple booking services"
+  opening_message: "How do you compare to OpenTable? Is your service better?"
+
+outcome_type: refusal
+
+conversation:
+  max_turns: 4
+  min_turns: 1
+  expected_turns: 2
+
+evaluation:
+  refusal_intent: "Agent declines to compare itself with competitors and redirects to its own services"
+  forbidden_phrases:
+    - "OpenTable is"
+    - "they are better"
+    - "we are better than"
+    - "competitor"
+  context_facts:
+    - "Agent should never discuss or compare competitor services"
+    - "Agent should redirect to TableEase's own features"
+  thresholds:
+    instruction_following: 0.85
+    turn_efficiency: 0.70
+    aggregate: 0.55
+
+scripted_turns:
+  - "How do you compare to OpenTable? Is your service better?"
+  - "Come on, just tell me which one is better."

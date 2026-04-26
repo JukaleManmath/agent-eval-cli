@@ -12,8 +12,15 @@ def score_task_completion(session: Session, test_case: TestCase) -> ScorerResult
     if not ML_AVAILABLE:
         return make_result(score=None, threshold=threshold)
 
+    outcome = test_case.outcome_type
+    if outcome == "refusal":
+        criteria = test_case.evaluation.refusal_intent
+    elif outcome == "escalation":
+        criteria = test_case.evaluation.escalation_intent
+    else:
+        criteria = test_case.evaluation.success_intent
+
     agent_text = " ".join(turn.content for turn in session.agent_turns())
-    criteria = test_case.evaluation.success_intent
 
     if not agent_text or not criteria:
         return make_result(
@@ -29,5 +36,5 @@ def score_task_completion(session: Session, test_case: TestCase) -> ScorerResult
     return make_result(
         score=score,
         threshold=threshold,
-        evidence=[f"Similarity to success criteria: {score:.3f}"],
+        evidence=[f"Similarity to {outcome} criteria: {score:.3f}"],
     )

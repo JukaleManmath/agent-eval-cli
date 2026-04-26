@@ -23,17 +23,24 @@ YOUR GOAL:
 EXPECTED OUTCOME:
 {outcome_type_instruction}
 
-STRICT RULES:
+RULES:
 1. Stay in character as {persona_name}. Never break character.
 2. Keep messages SHORT - 1 to 3 sentences. Real users don't write paragraphs.
 3. Pursue your goal naturally across multiple turns.
 4. If the agent answers your question, move toward your goal.
 5. If the agent says something confusing, ask for clarification in character.
-6. If the goal has been achieved, respond naturally to close the conversation.
-7. If the agent refuses and that is the expected outcome, accept naturally.
-8. If the agent is unhelpful after 3 turns, show mild frustration in character.
-9. When the conversation outcome is fully achieved, output on its own line:
-   [GOAL_ACHIEVED]
+6. If the agent refuses and that is the expected outcome, accept naturally.
+7. If the agent is unhelpful after 3 turns, show mild frustration in character.
+
+*** CRITICAL — GOAL COMPLETION SIGNAL ***
+After EVERY response, ask yourself: has the goal been FULLY achieved?
+- If YES: end your message with [GOAL_ACHIEVED] on its own line.
+- If NO: continue the conversation naturally.
+
+Examples:
+  Goal achieved:     "Thanks, that's all I needed!\n[GOAL_ACHIEVED]"
+  Goal achieved:     "Got it, perfect.\n[GOAL_ACHIEVED]"
+  Goal not yet done: "What happens if I cancel on the same day?"
 
 CONVERSATION SO FAR:
 {conversation_history}
@@ -41,7 +48,7 @@ CONVERSATION SO FAR:
 AGENT'S LAST MESSAGE:
 {last_agent_message}
 
-Your response as {persona_name} (short, natural, in character):
+Your response as {persona_name}:
 """
 
 OUTCOME_INSTRUCTIONS = {
@@ -105,8 +112,10 @@ class GroqSimulator(BaseSimulator):
         )
         next_turn = response.choices[0].message.content
 
-        if not next_turn:
-            return None
+        if next_turn is None:
+            return "[GOAL_ACHIEVED]"
+        if not next_turn.strip():
+            return "[GOAL_ACHIEVED]"
 
         self._history.append({"role": "user", "content": next_turn})
         return next_turn

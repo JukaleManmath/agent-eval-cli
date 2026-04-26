@@ -44,7 +44,7 @@ class Evaluation(BaseModel):
 
 
 class Meta(BaseModel):
-    schema_version: str
+    schema_version: str = "1.0"
     scenario_id: str
     name: str
     description: str | None = None

@@ -1,6 +1,9 @@
 # AgentEval
 
 ![CI](https://github.com/JukaleManmath/agent-eval-cli/actions/workflows/ci.yml/badge.svg)
+[![PyPI version](https://badge.fury.io/py/agent-eval-cli.svg)](https://pypi.org/project/agent-eval-cli/)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **Open-source multi-turn AI agent simulation and evaluation.**
 
@@ -10,6 +13,8 @@ Define a test scenario in YAML, run it against your agent's HTTP endpoint, and g
 pip install agent-eval-cli
 agenteval run test_cases/ --mode scripted
 ```
+
+![AgentEval Dashboard](https://raw.githubusercontent.com/JukaleManmath/agent-eval-cli/main/demo_images/dashboard.png)
 
 ---
 
@@ -39,7 +44,7 @@ pip install agent-eval-cli
 # + Groq simulation mode (free API key, no credit card)
 pip install agent-eval-cli[groq]
 
-# + ML scorers (sentence-transformers + spaCy, ~500MB)
+# + ML scorers (sentence-transformers, ~500MB)
 pip install agent-eval-cli[ml]
 
 # Everything
@@ -71,7 +76,7 @@ agent:
       "session_id": "${SESSION_ID}",
       "message": "${USER_MESSAGE}"
     }
-  response_path: "response.text"
+  response_path: "response"
   timeout_seconds: 30
 
 user_persona:
@@ -124,7 +129,7 @@ agenteval run test_cases/ --mode scripted
 **3. View results:**
 
 ```bash
-agenteval dashboard --reports-dir ./reports/
+agenteval dashboard ./reports/
 ```
 
 ---
@@ -141,6 +146,8 @@ Use this for CI/CD gates — results are reproducible across every run.
 agenteval run test_cases/ --mode scripted --concurrency 4 --fail-on-threshold 0.70
 ```
 
+![Scripted simulation](https://raw.githubusercontent.com/JukaleManmath/agent-eval-cli/main/demo_images/scripted_simulation.png)
+
 ### `--mode groq` — realistic simulation
 
 Llama 3.3 70B (via Groq's free API) plays the user side, guided by the persona and outcome type you defined. Has natural variance — useful for exploratory evaluation and finding edge cases scripted mode misses.
@@ -151,6 +158,8 @@ Requires a free [Groq API key](https://console.groq.com) — no credit card.
 export GROQ_API_KEY=your_key_here
 agenteval run test_cases/ --mode groq
 ```
+
+![Groq simulation](https://raw.githubusercontent.com/JukaleManmath/agent-eval-cli/main/demo_images/Groq_simulation.png)
 
 > **Privacy notice:** when using `--mode groq`, your `context_facts` are sent to Groq's API. Use `--mode scripted` for sensitive or proprietary data.
 
@@ -164,13 +173,13 @@ All scoring runs locally after the conversation completes. No API calls.
 
 | Scorer | What it measures | Requires `[ml]` |
 |---|---|---|
-| **Task Completion** | Did the agent achieve the user's stated goal? | Soft check only |
+| **Task Completion** | Semantic similarity between agent responses and the outcome intent | Yes |
 | **Instruction Following** | Did the agent obey forbidden/required phrase rules? | No |
 | **Response Coherence** | Are agent responses contextually relevant to what was asked? | Yes |
 | **Turn Efficiency** | Did the agent resolve the goal in a reasonable number of turns? | No |
 | **Hallucination Risk** | Did the agent state facts not grounded in `context_facts`? | Yes |
 
-Scorers 3 and 5 return `None` when `[ml]` is not installed — they are excluded from the aggregate and weights are re-normalised automatically.
+Scorers 1, 3, and 5 return `None` when `[ml]` is not installed — they are excluded from the aggregate and weights are re-normalised automatically.
 
 **Default aggregate weights:**
 
@@ -193,8 +202,8 @@ agenteval run test_cases/ --mode scripted
 # Run with Groq simulation
 agenteval run test_cases/ --mode groq
 
-# Filter by tag
-agenteval run test_cases/ --mode scripted --tag healthcare
+# Filter scenarios by tag
+agenteval run test_cases/ --mode scripted --tag customer-support
 
 # Parallel execution (default: 4)
 agenteval run test_cases/ --mode scripted --concurrency 8
@@ -212,11 +221,8 @@ agenteval run test_cases/ --mode scripted --verbose
 agenteval validate test_cases/booking.yaml
 agenteval validate test_cases/
 
-# Open dashboard for a single report
-agenteval dashboard report.json
-
-# Open dashboard for all reports in a directory (enables regression chart)
-agenteval dashboard --reports-dir ./reports/
+# Open dashboard for all reports in a directory
+agenteval dashboard ./reports/
 
 # Version
 agenteval --version
@@ -279,6 +285,8 @@ response_path: "reply"               # {"reply": "..."}
 ```
 
 ---
+
+![CI gate — fail on threshold](https://raw.githubusercontent.com/JukaleManmath/agent-eval-cli/main/demo_images/failed_on_threshold.png)
 
 ## CI/CD — GitHub Action
 
@@ -345,34 +353,56 @@ jobs:
           retention-days: 30
 ```
 
-This action posts (and updates) a PR comment with a results table on each push.
+Reports are uploaded as a build artifact on every run. Use `actions/download-artifact` in a subsequent step to post results as a PR comment.
 
 ---
 
-## Mock agent (for local testing)
+## Demo agent (try it in 2 minutes)
 
-A ready-made FastAPI echo agent is included for testing AgentEval before pointing it at your real agent:
+A ready-made customer support agent for **TableEase** (a restaurant booking service) is included so you can run AgentEval end-to-end without building your own agent first.
 
 ```bash
-cd examples/mock_agent
-docker compose up
-# Agent available at http://localhost:8080/chat
+# Install dependencies
+cd demo_agent
+pip install -r requirements.txt
+
+# Set your Groq API key (free at console.groq.com)
+export GROQ_API_KEY=your_key_here
+
+# Start the agent
+uvicorn main:app --reload
+# Agent running at http://localhost:8000/chat
 ```
+
+Then in a second terminal, run the included test cases:
+
+```bash
+agenteval run test_cases/ --mode scripted --output-dir ./reports/
+agenteval dashboard ./reports/
+```
+
+The demo agent handles table bookings, cancellation policy questions, competitor refusals, and escalations to a human manager — covering all three `outcome_type` values.
 
 ---
 
 ## Dashboard
 
 ```bash
-agenteval dashboard --reports-dir ./reports/
-# Opens http://localhost:5173 in your browser
+agenteval dashboard ./reports/
+# Opens http://localhost:8080 in your browser
 ```
 
 Features:
-- Per-scenario score breakdown and pass/fail badges
-- Full conversation replay with turn-by-turn annotation
-- Radar chart of the 5 scorer dimensions (skipped scorers shown as N/A, not 0)
-- Regression chart across all reports in `--reports-dir`
+- Run summary with pass/fail counts and aggregate score
+- Radar chart showing all 5 scorer dimensions per scenario
+- Per-scenario score breakdown with pass/fail per scorer
+- Full conversation transcript replay (chat bubble view)
+- Evidence items flagged by instruction-following and hallucination scorers
+- Multi-report dropdown to switch between runs
+
+![Transcript replay](https://raw.githubusercontent.com/JukaleManmath/agent-eval-cli/main/demo_images/Transcripts.png)
+
+![Evidence scores](https://raw.githubusercontent.com/JukaleManmath/agent-eval-cli/main/demo_images/Evidence_score.png)
 
 ---
 

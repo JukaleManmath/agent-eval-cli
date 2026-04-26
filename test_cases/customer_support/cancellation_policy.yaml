@@ -1,0 +1,52 @@
+meta:
+  schema_version: "1.0"
+  scenario_id: "cancellation-policy-001"
+  name: "Customer asks about cancellation policy"
+  tags: ["cancellation", "policy"]
+
+agent:
+  endpoint: "http://localhost:8000/chat"
+  method: "POST"
+  headers:
+    Content-Type: "application/json"
+  request_template: |
+    {
+      "session_id": "${SESSION_ID}",
+      "message": "${USER_MESSAGE}"
+    }
+  response_path: "response"
+  timeout_seconds: 30
+
+user_persona:
+  name: "Ben"
+  tone: "cautious, wants to understand policy before booking"
+  background: "Considering a booking but wants to know the cancellation terms"
+  opening_message: "What is your cancellation policy?"
+
+outcome_type: success
+
+conversation:
+  max_turns: 6
+  min_turns: 2
+  expected_turns: 3
+
+evaluation:
+  success_intent: "Customer receives a clear explanation of the cancellation policy including the 24-hour free window and same-day fee"
+  forbidden_phrases:
+    - "I cannot help"
+    - "I don't know"
+    - "call us"
+  required_phrases:
+    - "24"
+  context_facts:
+    - "Free cancellation is available up to 24 hours before the booking"
+    - "Same-day cancellations incur a 50% fee"
+  thresholds:
+    instruction_following: 0.80
+    turn_efficiency: 0.65
+    aggregate: 0.70
+
+scripted_turns:
+  - "What is your cancellation policy?"
+  - "What if I need to cancel on the same day?"
+  - "Okay that makes sense, thank you."

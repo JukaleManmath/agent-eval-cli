@@ -1,3 +1,5 @@
+import RadarChart from './RadarChart.jsx'
+
 const SCORER_SHORT = {
   task_completion: 'Task Completion',
   instruction_following: 'Instructions',
@@ -89,7 +91,12 @@ export default function ScenarioDetail({ scenario }) {
         )}
       </div>
 
-      {/* Scorers */}
+      {/* Radar chart — full width */}
+      {!scenario.errored && Object.keys(scenario.scores || {}).length > 0 && (
+        <RadarChart scores={scenario.scores} />
+      )}
+
+      {/* Scorer cards */}
       {!scenario.errored && Object.keys(scenario.scores || {}).length > 0 && (
         <div>
           <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">Scorers</p>

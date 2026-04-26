@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import uuid
 
 from agenteval.schema.test_case import TestCase
@@ -8,19 +9,13 @@ from agenteval.simulation.session import Session, Turn
 from agenteval.simulation.simulator_factory import create_simulator
 
 
+_GOAL_PATTERN = re.compile(r"\[GOAL[_\s]ACHIEVED\]", re.IGNORECASE)
+
+
 def _parse_termination(response_text: str) -> tuple[str, str | None]:
-    lines = response_text.strip().split("\n")
-    last_line = lines[-1].strip()
-    normalised = last_line.strip("`\"'.,!? ").strip()
-
-    if normalised == "[GOAL_ACHIEVED]":
-        clean = "\n".join(lines[:-1]).strip()
+    if _GOAL_PATTERN.search(response_text):
+        clean = _GOAL_PATTERN.sub("", response_text).strip()
         return clean, "goal_achieved"
-
-    if "[GOAL_ACHIEVED]" in response_text:
-        clean = response_text.replace("[GOAL_ACHIEVED]", "").strip()
-        return clean, "goal_achieved"
-
     return response_text, None
 
 
