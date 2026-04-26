@@ -7,7 +7,7 @@
 
 **Open-source multi-turn AI agent simulation and evaluation.**
 
-Define a test scenario in YAML, run it against your agent's HTTP endpoint, and get a structured pass/fail report — from your terminal, for free, with no mandatory cloud dependency.
+Define a test scenario in YAML, run it against your agent's HTTP endpoint, and get a structured pass/fail report, **from your terminal, for free, with no mandatory cloud dependency**.
 
 ```bash
 pip install agent-eval-cli
