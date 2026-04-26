@@ -14,7 +14,11 @@ pip install agent-eval-cli
 agenteval run test_cases/ --mode scripted
 ```
 
-![AgentEval Dashboard](https://raw.githubusercontent.com/JukaleManmath/agent-eval-cli/main/demo_images/dashboard.png)
+
+
+https://github.com/user-attachments/assets/1fc3cd83-04ca-4cc7-8a75-774e8dfc91d5
+
+
 
 ---
 
@@ -399,6 +403,8 @@ Features:
 - Full conversation transcript replay (chat bubble view)
 - Evidence items flagged by instruction-following and hallucination scorers
 - Multi-report dropdown to switch between runs
+
+![AgentEval Dashboard](https://raw.githubusercontent.com/JukaleManmath/agent-eval-cli/main/demo_images/dashboard.png)
 
 ![Transcript replay](https://raw.githubusercontent.com/JukaleManmath/agent-eval-cli/main/demo_images/Transcripts.png)
 
