@@ -8,7 +8,6 @@ from agenteval.simulation.agent_client import AgentClient
 from agenteval.simulation.session import Session, Turn
 from agenteval.simulation.simulator_factory import create_simulator
 
-
 _GOAL_PATTERN = re.compile(r"\[GOAL[_\s]ACHIEVED\]", re.IGNORECASE)
 
 
